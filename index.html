@@ -1,10 +1,354 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Kaylee's Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rubber Bands in Orthodontics</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f1fb;
+      color: #2b1f35;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4b1f6f, #7b3db8);
+      color: white;
+      padding: 70px 20px 60px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.7rem;
+      max-width: 900px;
+      margin: 0 auto 15px;
+    }
+
+    header p {
+      font-size: 1.05rem;
+      max-width: 850px;
+      margin: 0 auto;
+      opacity: 0.95;
+    }
+
+    nav {
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 16px 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #5a2a82;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover {
+      color: #8b4fd1;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 50px 20px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      color: #5a2a82;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      max-width: 750px;
+      margin: 0 auto 35px;
+      color: #5f5468;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
+      border-top: 6px solid #8b4fd1;
+    }
+
+    .card h3 {
+      color: #5a2a82;
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .card p, .card li {
+      color: #3e3447;
+      font-size: 0.98rem;
+    }
+
+    .card ul {
+      padding-left: 18px;
+      margin-top: 10px;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, #ffffff, #f2e9fb);
+      border: 1px solid #e5d5f7;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
+    }
+
+    .video-card h3 {
+      color: #5a2a82;
+      margin-bottom: 12px;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 14px;
+      background: #ddd;
+    }
+
+    .results-box {
+      margin-top: 24px;
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
+    }
+
+    .results-box h3 {
+      color: #5a2a82;
+      margin-bottom: 12px;
+    }
+
+    .hero-button {
+      display: inline-block;
+      margin-top: 24px;
+      background: white;
+      color: #5a2a82;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: bold;
+      transition: 0.25s ease;
+    }
+
+    .hero-button:hover {
+      background: #f2e9fb;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      background: #2f173f;
+      color: #eee;
+      margin-top: 40px;
+    }
+
+    .small-text {
+      font-size: 0.95rem;
+      color: #62576b;
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello, I'm Kaylee</h1>
-    <p>Welcome to my website.</p>
+
+  <header>
+    <h1>Should Rubber Bands Be Used in Orthodontics?</h1>
+    <p>
+      A project exploring the mechanical behavior of orthodontic rubber bands under different
+      loading and environmental conditions, with experimental testing and finite element analysis.
+    </p>
+    <a href="#fea" class="hero-button">View FEA Simulations</a>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#aim">Aim</a></li>
+      <li><a href="#design">Experimental Design</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#fea">FEA Simulation</a></li>
+      <li><a href="#conclusion">Conclusion</a></li>
+    </ul>
+  </nav>
+
+  <section class="container" id="intro">
+    <h2 class="section-title">Introduction</h2>
+    <p class="section-subtitle">
+      Natural rubber is widely used in orthodontic elastics because of its elasticity and low cost,
+      but its mechanical behavior can change under different loading conditions and environments.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Project Background</h3>
+        <p>
+          Orthodontic rubber bands are commonly used to apply force during treatment.
+          Their effectiveness depends on how well they maintain force and resist deformation.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Why This Matters</h3>
+        <p>
+          Understanding how these elastics behave helps evaluate whether they remain reliable in
+          clinical conditions such as repeated stretching, different temperatures, and pH exposure.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="aim">
+    <h2 class="section-title">Aim of the Project</h2>
+    <div class="card highlight">
+      <h3>Research Goals</h3>
+      <ul>
+        <li>Determine how rubber bands deform under cyclic loading.</li>
+        <li>Assess whether environmental conditions affect their behavior.</li>
+        <li>Compare the force-displacement response of different band sizes.</li>
+        <li>Visualize deformation using finite element analysis (FEA).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="container" id="design">
+    <h2 class="section-title">Experimental Design</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Materials</h3>
+        <p>
+          The study tested orthodontic rubber bands using controlled tensile and cyclic loading
+          conditions. Measurements focused on displacement, strain, and force response.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Testing Conditions</h3>
+        <ul>
+          <li>Cyclic loading</li>
+          <li>Different temperatures</li>
+          <li>Different pH environments</li>
+          <li>Comparison of small and large diameter bands</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Analysis Method</h3>
+        <p>
+          Experimental results were paired with finite element analysis to better understand how
+          stress and deformation are distributed during expansion.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="results">
+    <h2 class="section-title">Results Overview</h2>
+
+    <div class="results-box">
+      <h3>Key Findings</h3>
+      <ul>
+        <li>Rubber bands showed force loss after repeated loading cycles.</li>
+        <li>Temperature influenced mechanical response more strongly than pH.</li>
+        <li>Different band diameters produced different deformation behavior.</li>
+        <li>FEA helped visualize how strain develops as the band expands.</li>
+      </ul>
+      <p class="small-text" style="margin-top: 14px;">
+        You can later replace this summary with exact findings from your graphs, tables, and poster.
+      </p>
+    </div>
+  </section>
+
+  <section class="container" id="fea">
+    <h2 class="section-title">FEA Simulation</h2>
+    <p class="section-subtitle">
+      Below are simulation videos showing the expansion behavior of orthodontic rubber bands for
+      different diameters.
+    </p>
+
+    <div class="video-grid">
+      <div class="video-card">
+        <h3>Large Diameter Expansion</h3>
+        <video controls>
+          <source src="large-diameter.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p class="small-text" style="margin-top: 10px;">
+          Finite element simulation showing deformation during expansion of the large diameter band.
+        </p>
+      </div>
+
+      <div class="video-card">
+        <h3>Small Diameter Expansion</h3>
+        <video controls>
+          <source src="small-diameter.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p class="small-text" style="margin-top: 10px;">
+          Finite element simulation showing deformation during expansion of the small diameter band.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="conclusion">
+    <h2 class="section-title">Conclusion</h2>
+    <div class="card highlight">
+      <h3>Final Takeaway</h3>
+      <p>
+        This project investigates whether rubber bands remain mechanically reliable for orthodontic
+        use. By combining physical testing with finite element analysis, the study provides a clearer
+        view of how elastic bands respond to repeated loading and changing environments.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    Project Website | Rubber Bands in Orthodontics
+  </footer>
+
 </body>
 </html>
