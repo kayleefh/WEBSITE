@@ -3,8 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rubber Bands in Orthodontics</title>
+  <title>FEA Simulation | Orthodontic Rubber Bands</title>
   <style>
+    :root {
+      --bg: #f6f0fb;
+      --bg-soft: #fbf8fe;
+      --panel: rgba(255, 255, 255, 0.82);
+      --panel-strong: rgba(255, 255, 255, 0.94);
+      --text: #2b1b35;
+      --muted: #6d5a79;
+      --line: rgba(123, 73, 168, 0.18);
+      --primary: #7b49a8;
+      --primary-dark: #5a2f82;
+      --primary-soft: #eadcf7;
+      --accent: #b48ae0;
+      --shadow: 0 16px 50px rgba(90, 47, 130, 0.14);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -16,339 +33,943 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #f6f1fb;
-      color: #2b1f35;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(180, 138, 224, 0.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(123, 73, 168, 0.18), transparent 24%),
+        linear-gradient(180deg, #f3ebfb 0%, #f8f4fc 42%, #fcfbfe 100%);
       line-height: 1.6;
     }
 
-    header {
-      background: linear-gradient(135deg, #4b1f6f, #7b3db8);
-      color: white;
-      padding: 70px 20px 60px;
-      text-align: center;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    header h1 {
-      font-size: 2.7rem;
-      max-width: 900px;
-      margin: 0 auto 15px;
-    }
-
-    header p {
-      font-size: 1.05rem;
-      max-width: 850px;
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
-      opacity: 0.95;
     }
 
-    nav {
-      background: white;
+    .nav {
       position: sticky;
       top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(250, 246, 253, 0.78);
+      border-bottom: 1px solid rgba(123, 73, 168, 0.1);
     }
 
-    nav ul {
-      list-style: none;
+    .nav-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 24px;
-      padding: 16px 20px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
     }
 
-    nav a {
-      text-decoration: none;
-      color: #5a2a82;
-      font-weight: bold;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #9d6bd0);
+      display: grid;
+      place-items: center;
+      color: white;
+      box-shadow: 0 10px 24px rgba(123, 73, 168, 0.28);
       font-size: 0.95rem;
     }
 
-    nav a:hover {
-      color: #8b4fd1;
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 50px 20px;
+    .nav-links a:hover {
+      color: var(--primary-dark);
+    }
+
+    .hero {
+      padding: 72px 0 38px;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(140deg, rgba(90, 47, 130, 0.96), rgba(123, 73, 168, 0.92) 48%, rgba(154, 107, 208, 0.88));
+      color: white;
+      border-radius: 34px;
+      box-shadow: 0 28px 60px rgba(90, 47, 130, 0.24);
+      padding: 64px 52px;
+      min-height: 420px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-panel::before,
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      filter: blur(2px);
+    }
+
+    .hero-panel::before {
+      width: 300px;
+      height: 300px;
+      top: -100px;
+      right: -60px;
+    }
+
+    .hero-panel::after {
+      width: 220px;
+      height: 220px;
+      bottom: -90px;
+      left: -40px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 4vw, 4.35rem);
+      line-height: 1.02;
+      margin-bottom: 18px;
+      letter-spacing: -0.03em;
+      max-width: 10ch;
+    }
+
+    .hero p {
+      max-width: 62ch;
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.04rem;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: white;
+      color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-aside {
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .glass-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .glass-card p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .section {
+      padding: 30px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 22px;
     }
 
     .section-title {
-      font-size: 2rem;
-      color: #5a2a82;
-      margin-bottom: 20px;
-      text-align: center;
+      font-size: clamp(1.7rem, 2.5vw, 2.6rem);
+      letter-spacing: -0.03em;
+      color: var(--primary-dark);
     }
 
-    .section-subtitle {
-      text-align: center;
-      max-width: 750px;
-      margin: 0 auto 35px;
-      color: #5f5468;
+    .section-copy {
+      max-width: 62ch;
+      color: var(--muted);
     }
 
-    .grid {
+    .overview {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 24px;
+      align-items: stretch;
     }
 
     .card {
-      background: white;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card strong {
+      color: var(--primary-dark);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      padding: 18px;
       border-radius: 20px;
-      padding: 26px;
-      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
-      border-top: 6px solid #8b4fd1;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(244,236,251,0.92));
+      border: 1px solid rgba(123, 73, 168, 0.12);
     }
 
-    .card h3 {
-      color: #5a2a82;
-      margin-bottom: 12px;
-      font-size: 1.2rem;
+    .metric-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
     }
 
-    .card p, .card li {
-      color: #3e3447;
-      font-size: 0.98rem;
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      line-height: 1;
     }
 
-    .card ul {
-      padding-left: 18px;
-      margin-top: 10px;
+    .metric small {
+      display: block;
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 0.82rem;
     }
 
-    .highlight {
-      background: linear-gradient(135deg, #ffffff, #f2e9fb);
-      border: 1px solid #e5d5f7;
+    .feature-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(123, 73, 168, 0.12);
+    }
+
+    .feature:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .feature-bullet {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .loop-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loop-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary), #b48ae0);
+    }
+
+    .loop-label {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .loop-card h3 {
+      font-size: 1.6rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .loop-desc {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .spec {
+      padding: 14px 14px 12px;
+      border-radius: 18px;
+      background: rgba(123, 73, 168, 0.05);
+      border: 1px solid rgba(123, 73, 168, 0.1);
+    }
+
+    .spec span {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .spec strong {
+      font-size: 1.04rem;
+      color: var(--text);
+    }
+
+    .video-section {
+      padding-top: 40px;
     }
 
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 24px;
-      margin-top: 30px;
     }
 
     .video-card {
-      background: white;
-      border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
     }
 
-    .video-card h3 {
-      color: #5a2a82;
-      margin-bottom: 12px;
+    .video-frame {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #eadcf7, #f8f3fd);
+      border: 1px solid rgba(123, 73, 168, 0.12);
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
     }
 
     video {
       width: 100%;
-      border-radius: 14px;
-      background: #ddd;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #e7dcf4;
     }
 
-    .results-box {
-      margin-top: 24px;
-      background: white;
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 10px 28px rgba(85, 45, 120, 0.10);
-    }
-
-    .results-box h3 {
-      color: #5a2a82;
-      margin-bottom: 12px;
-    }
-
-    .hero-button {
-      display: inline-block;
-      margin-top: 24px;
-      background: white;
-      color: #5a2a82;
-      text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 999px;
-      font-weight: bold;
-      transition: 0.25s ease;
-    }
-
-    .hero-button:hover {
-      background: #f2e9fb;
-    }
-
-    footer {
+    .video-placeholder {
       text-align: center;
-      padding: 30px 20px;
-      background: #2f173f;
-      color: #eee;
-      margin-top: 40px;
+      padding: 28px;
+      color: var(--muted);
     }
 
-    .small-text {
+    .video-placeholder strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .video-card h3 {
+      font-size: 1.35rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .video-card p {
+      color: var(--muted);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .figure {
+      padding: 18px;
+    }
+
+    .figure-frame {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #ffffff, #f1e7fb);
+      border: 1px solid rgba(123, 73, 168, 0.12);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .figure-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .figure-placeholder {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .figure-placeholder strong {
+      display: block;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .caption-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .caption-copy {
+      color: var(--muted);
       font-size: 0.95rem;
-      color: #62576b;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 6px;
+    }
+
+    .step {
+      padding: 20px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(244,236,251,0.95));
+      border: 1px solid rgba(123, 73, 168, 0.12);
+      box-shadow: 0 12px 30px rgba(90, 47, 130, 0.08);
+    }
+
+    .step-index {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: var(--primary-dark);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      color: var(--primary-dark);
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .footer {
+      padding: 28px 0 42px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-card {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(123,73,168,0.1);
+      border-radius: 22px;
+      padding: 20px 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-panel,
+      .overview,
+      .compare-grid,
+      .video-grid,
+      .gallery-grid,
+      .summary,
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .nav-links {
+        gap: 12px;
+      }
+
+      .hero-panel {
+        padding: 34px 24px;
+        border-radius: 26px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .metrics,
+      .mini-grid,
+      .spec-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        flex-direction: column;
+        align-items: start;
+      }
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <h1>Should Rubber Bands Be Used in Orthodontics?</h1>
-    <p>
-      A project exploring the mechanical behavior of orthodontic rubber bands under different
-      loading and environmental conditions, with experimental testing and finite element analysis.
-    </p>
-    <a href="#fea" class="hero-button">View FEA Simulations</a>
-  </header>
-
-  <nav>
-    <ul>
-      <li><a href="#intro">Introduction</a></li>
-      <li><a href="#aim">Aim</a></li>
-      <li><a href="#design">Experimental Design</a></li>
-      <li><a href="#results">Results</a></li>
-      <li><a href="#fea">FEA Simulation</a></li>
-      <li><a href="#conclusion">Conclusion</a></li>
-    </ul>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-mark">FEA</span>
+        <span>Orthodontic Loop Simulation</span>
+      </a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#models">Loop Models</a>
+        <a href="#videos">Videos</a>
+        <a href="#figures">Figures</a>
+        <a href="#workflow">Workflow</a>
+      </div>
+    </div>
   </nav>
 
-  <section class="container" id="intro">
-    <h2 class="section-title">Introduction</h2>
-    <p class="section-subtitle">
-      Natural rubber is widely used in orthodontic elastics because of its elasticity and low cost,
-      but its mechanical behavior can change under different loading conditions and environments.
-    </p>
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-panel">
+        <div>
+          <div class="eyebrow">Finite Element Analysis Focus</div>
+          <h1>FEA website for the orthodontic loop project.</h1>
+          <p>
+            This page focuses only on the simulation side of the project: semicircular loop models,
+            geometry parameters, deformation behavior, and expansion videos for the thick and thin loops.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#videos">View simulation videos</a>
+            <a class="btn btn-secondary" href="#models">See model dimensions</a>
+          </div>
+        </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Project Background</h3>
-        <p>
-          Orthodontic rubber bands are commonly used to apply force during treatment.
-          Their effectiveness depends on how well they maintain force and resist deformation.
-        </p>
+        <div class="hero-aside">
+          <div class="info-stack">
+            <div class="glass-card">
+              <h3>Simulation setup</h3>
+              <p>Semicircular loop geometry with both ends fixed and displacement applied to study expansion.</p>
+            </div>
+            <div class="mini-grid">
+              <div class="glass-card">
+                <h3>Thick loop</h3>
+                <p>Mean diameter 25 mm</p>
+              </div>
+              <div class="glass-card">
+                <h3>Thin loop</h3>
+                <p>Mean diameter 40 mm</p>
+              </div>
+              <div class="glass-card">
+                <h3>Material note</h3>
+                <p>Both loops have a thickness of 2 mm.</p>
+              </div>
+              <div class="glass-card">
+                <h3>Volume note</h3>
+                <p>Each loop is approximately 1200 mm³ in total material volume.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="overview">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Simulation overview</h2>
+          <p class="section-copy">
+            The full project website is intentionally narrowed to the finite element analysis component.
+            The aim is to compare how two loop geometries behave during expansion while keeping the presentation clean,
+            visual, and focused on engineering interpretation.
+          </p>
+        </div>
       </div>
 
-      <div class="card">
-        <h3>Why This Matters</h3>
-        <p>
-          Understanding how these elastics behave helps evaluate whether they remain reliable in
-          clinical conditions such as repeated stretching, different temperatures, and pH exposure.
-        </p>
+      <div class="overview">
+        <div class="card">
+          <strong>What this website shows</strong>
+          <div class="feature-list">
+            <div class="feature">
+              <div class="feature-bullet">1</div>
+              <div>
+                <strong>Semicircular FEA models</strong>
+                <p>The loops are represented as semicircular bands rather than full circular rings.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="feature-bullet">2</div>
+              <div>
+                <strong>Geometry comparison</strong>
+                <p>The thick and thin loops are presented side by side with their model dimensions.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="feature-bullet">3</div>
+              <div>
+                <strong>Visual deformation evidence</strong>
+                <p>Videos and figure panels are reserved for showing displacement or stress patterns during expansion.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Quick facts</strong>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Model type</div>
+              <div class="metric-value">Semicircle</div>
+              <small>Half-loop geometry used in simulation.</small>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Number of loops</div>
+              <div class="metric-value">2</div>
+              <small>Thick and thin loop models.</small>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Thickness</div>
+              <div class="metric-value">2 mm</div>
+              <small>Common thickness for both models.</small>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Approx. total volume</div>
+              <div class="metric-value">1200</div>
+              <small>About 1200 mm³ for each full loop.</small>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="section shell" id="models">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Loop models</h2>
+          <p class="section-copy">
+            Both simulations are based on semicircular loop geometry. The diameters below remain the original loop diameters,
+            while the FEA geometry represents half of the circular loop.
+          </p>
+        </div>
+      </div>
+
+      <div class="compare-grid">
+        <article class="card loop-card">
+          <div class="loop-label">Thick loop</div>
+          <h3>Compact, wider loop</h3>
+          <p class="loop-desc">
+            This loop has the smaller mean diameter and greater width, producing a thicker, more compact semicircular geometry.
+          </p>
+          <div class="spec-grid">
+            <div class="spec"><span>Mean diameter</span><strong>25 mm</strong></div>
+            <div class="spec"><span>Width</span><strong>7.64 mm</strong></div>
+            <div class="spec"><span>Thickness</span><strong>2 mm</strong></div>
+            <div class="spec"><span>Inner diameter</span><strong>17.36 mm</strong></div>
+            <div class="spec"><span>Outer diameter</span><strong>32.64 mm</strong></div>
+            <div class="spec"><span>Mean radius</span><strong>12.5 mm</strong></div>
+            <div class="spec"><span>Inner radius</span><strong>8.68 mm</strong></div>
+            <div class="spec"><span>Outer radius</span><strong>16.32 mm</strong></div>
+            <div class="spec"><span>Semicircle arc length</span><strong>39.27 mm</strong></div>
+            <div class="spec"><span>Approx. full-loop volume</span><strong>1199.7 mm³</strong></div>
+          </div>
+        </article>
+
+        <article class="card loop-card">
+          <div class="loop-label">Thin loop</div>
+          <h3>Larger, narrower loop</h3>
+          <p class="loop-desc">
+            This loop uses a larger diameter with a smaller width, producing a broader arc while keeping material volume similar.
+          </p>
+          <div class="spec-grid">
+            <div class="spec"><span>Mean diameter</span><strong>40 mm</strong></div>
+            <div class="spec"><span>Width</span><strong>4.77 mm</strong></div>
+            <div class="spec"><span>Thickness</span><strong>2 mm</strong></div>
+            <div class="spec"><span>Inner diameter</span><strong>35.23 mm</strong></div>
+            <div class="spec"><span>Outer diameter</span><strong>44.77 mm</strong></div>
+            <div class="spec"><span>Mean radius</span><strong>20 mm</strong></div>
+            <div class="spec"><span>Inner radius</span><strong>17.615 mm</strong></div>
+            <div class="spec"><span>Outer radius</span><strong>22.385 mm</strong></div>
+            <div class="spec"><span>Semicircle arc length</span><strong>62.83 mm</strong></div>
+            <div class="spec"><span>Approx. full-loop volume</span><strong>1198.8 mm³</strong></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell video-section" id="videos">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Simulation videos</h2>
+          <p class="section-copy">
+            Replace the placeholders below with your actual FEA expansion videos. Keep the filenames the same,
+            or edit the source names in the HTML to match your uploaded files.
+          </p>
+        </div>
+      </div>
+
+      <div class="video-grid">
+        <article class="card video-card">
+          <div class="video-frame">
+            <video controls poster="">
+              <source src="thick-loop-expansion.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <h3>Thick loop expansion</h3>
+          <p>
+            Finite element simulation of the thick semicircular loop during expansion. Use this panel for the large-width loop video.
+          </p>
+        </article>
+
+        <article class="card video-card">
+          <div class="video-frame">
+            <video controls poster="">
+              <source src="thin-loop-expansion.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <h3>Thin loop expansion</h3>
+          <p>
+            Finite element simulation of the thin semicircular loop during expansion. Use this panel for the large-diameter loop video.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="figures">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Figure panels</h2>
+          <p class="section-copy">
+            Use this section for still images from your FEA output, such as displacement contours, stress maps, or comparison frames.
+          </p>
+        </div>
+      </div>
+
+      <div class="gallery-grid">
+        <article class="card figure">
+          <div class="figure-frame">
+            <img src="thick-loop-figure.png" alt="Thick loop FEA figure" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <div class="figure-placeholder" style="display:none;">
+              <strong>Thick loop figure placeholder</strong>
+              Upload an image named <em>thick-loop-figure.png</em> to show the thick loop contour plot here.
+            </div>
+          </div>
+          <div class="caption-title">Thick loop contour plot</div>
+          <div class="caption-copy">Ideal for displacement, von Mises stress, or strain visualization for the thick loop model.</div>
+        </article>
+
+        <article class="card figure">
+          <div class="figure-frame">
+            <img src="thin-loop-figure.png" alt="Thin loop FEA figure" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <div class="figure-placeholder" style="display:none;">
+              <strong>Thin loop figure placeholder</strong>
+              Upload an image named <em>thin-loop-figure.png</em> to show the thin loop contour plot here.
+            </div>
+          </div>
+          <div class="caption-title">Thin loop contour plot</div>
+          <div class="caption-copy">Best used for a matching output view so the two loop models can be compared directly.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="workflow">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Simulation workflow</h2>
+          <p class="section-copy">
+            This is a clean engineering-style summary of how the FEA portion of the project was structured.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="step-index">1</div>
+          <h3>Geometry definition</h3>
+          <p>Each loop was represented as a semicircular band using measured loop dimensions.</p>
+        </div>
+        <div class="step">
+          <div class="step-index">2</div>
+          <h3>Boundary conditions</h3>
+          <p>The lower ends of the semicircle were fixed while expansion displacement was applied.</p>
+        </div>
+        <div class="step">
+          <div class="step-index">3</div>
+          <h3>Numerical solution</h3>
+          <p>The simulation generated deformation and contour results for comparison between loop types.</p>
+        </div>
+        <div class="step">
+          <div class="step-index">4</div>
+          <h3>Interpretation</h3>
+          <p>Differences in loop size and width were examined through displacement behavior and visual contours.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell">
+      <div class="summary">
+        <div class="card">
+          <strong>Design takeaway</strong>
+          <p style="margin-top: 12px; color: var(--muted);">
+            The thick and thin loop models differ geometrically, but both use approximately the same total material volume.
+            This makes the comparison visually and mechanically interesting for FEA-focused presentation.
+          </p>
+        </div>
+        <div class="card">
+          <strong>How to finish the page</strong>
+          <p style="margin-top: 12px; color: var(--muted);">
+            Upload your videos and contour screenshots to the same GitHub repository, then keep the filenames aligned with the HTML.
+            Once committed, GitHub Pages will update the website automatically.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell">
+    <div class="footer-card">
+      <div>FEA-only project website for orthodontic loop expansion analysis.</div>
+      <div>Made for GitHub Pages.</div>
     </div>
-  </section>
-
-  <section class="container" id="aim">
-    <h2 class="section-title">Aim of the Project</h2>
-    <div class="card highlight">
-      <h3>Research Goals</h3>
-      <ul>
-        <li>Determine how rubber bands deform under cyclic loading.</li>
-        <li>Assess whether environmental conditions affect their behavior.</li>
-        <li>Compare the force-displacement response of different band sizes.</li>
-        <li>Visualize deformation using finite element analysis (FEA).</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="container" id="design">
-    <h2 class="section-title">Experimental Design</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Materials</h3>
-        <p>
-          The study tested orthodontic rubber bands using controlled tensile and cyclic loading
-          conditions. Measurements focused on displacement, strain, and force response.
-        </p>
-      </div>
-
-      <div class="card">
-        <h3>Testing Conditions</h3>
-        <ul>
-          <li>Cyclic loading</li>
-          <li>Different temperatures</li>
-          <li>Different pH environments</li>
-          <li>Comparison of small and large diameter bands</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>Analysis Method</h3>
-        <p>
-          Experimental results were paired with finite element analysis to better understand how
-          stress and deformation are distributed during expansion.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="container" id="results">
-    <h2 class="section-title">Results Overview</h2>
-
-    <div class="results-box">
-      <h3>Key Findings</h3>
-      <ul>
-        <li>Rubber bands showed force loss after repeated loading cycles.</li>
-        <li>Temperature influenced mechanical response more strongly than pH.</li>
-        <li>Different band diameters produced different deformation behavior.</li>
-        <li>FEA helped visualize how strain develops as the band expands.</li>
-      </ul>
-      <p class="small-text" style="margin-top: 14px;">
-        You can later replace this summary with exact findings from your graphs, tables, and poster.
-      </p>
-    </div>
-  </section>
-
-  <section class="container" id="fea">
-    <h2 class="section-title">FEA Simulation</h2>
-    <p class="section-subtitle">
-      Below are simulation videos showing the expansion behavior of orthodontic rubber bands for
-      different diameters.
-    </p>
-
-    <div class="video-grid">
-      <div class="video-card">
-        <h3>Large Diameter Expansion</h3>
-        <video controls>
-          <source src="large-diameter.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <p class="small-text" style="margin-top: 10px;">
-          Finite element simulation showing deformation during expansion of the large diameter band.
-        </p>
-      </div>
-
-      <div class="video-card">
-        <h3>Small Diameter Expansion</h3>
-        <video controls>
-          <source src="small-diameter.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <p class="small-text" style="margin-top: 10px;">
-          Finite element simulation showing deformation during expansion of the small diameter band.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="container" id="conclusion">
-    <h2 class="section-title">Conclusion</h2>
-    <div class="card highlight">
-      <h3>Final Takeaway</h3>
-      <p>
-        This project investigates whether rubber bands remain mechanically reliable for orthodontic
-        use. By combining physical testing with finite element analysis, the study provides a clearer
-        view of how elastic bands respond to repeated loading and changing environments.
-      </p>
-    </div>
-  </section>
-
-  <footer>
-    Project Website | Rubber Bands in Orthodontics
   </footer>
-
 </body>
 </html>
+
